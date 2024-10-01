@@ -7,8 +7,6 @@
   <!--  JavaScript  -->
   <script type='text/javascript' src='https://service.force.com/embeddedservice/5.0/esw.min.js'></script>
   <script type='text/javascript'>
-    var chatMinimized = true; // Chat initially minimized
-
     var initESW = function(gslbBaseURL) {
         embedded_svc.settings.displayHelpButton = false; // Or false
         embedded_svc.settings.language = ''; // For example, enter 'en' or 'en-US'
@@ -104,6 +102,12 @@
                 isOfflineSupportEnabled: false
             }
         );
+
+        // Minimize chat initially
+        embedded_svc.addEventHandler("onChatLoaded", function() {
+            var chatContainer = document.querySelector(".embeddedServiceChatContainer");
+            chatContainer.style.display = "none"; // Hide chat initially
+        });
     };
 
     if (!window.embedded_svc) {
@@ -130,25 +134,10 @@
     // Check URL 
     window.onload = function() {
         checkURLAndStartChat();
-        toggleChat(); // Minimize the chat initially
     };
 
     function bootstrapChat() {
         embedded_svc.bootstrapEmbeddedService();
-    }
-
-    function toggleChat() {
-        chatMinimized = !chatMinimized;
-        const chatBody = document.getElementById('chatBody');
-        const minimizeBtn = document.getElementById('minimizeBtn');
-
-        if (chatMinimized) {
-            chatBody.style.display = 'none';
-            minimizeBtn.textContent = '+';
-        } else {
-            chatBody.style.display = 'block';
-            minimizeBtn.textContent = '-';
-        }
     }
   </script>
   
@@ -165,10 +154,6 @@
         src: url('https://c1.sfdcstatic.com/etc/clientlibs/sfdc-aem-master/clientlibs_base/fonts/SalesforceSans-Regular.woff') format('woff'),
         url('https://c1.sfdcstatic.com/etc/clientlibs/sfdc-aem-master/clientlibs_base/fonts/SalesforceSans-Regular.ttf') format('truetype');
     }
-
-    #chatBody {
-        display: none; /* Initially hidden */
-    }
   </style>
 </head>
 
@@ -182,16 +167,6 @@
 <td>Click to Chat:</td><td><button id="chatButton" onclick="bootstrapChat()">Chat</button></td>
 </tr>
 </table>
-
-<div id="chatContainer">
-    <div id="chatHeader">
-        <span>Live Support</span>
-        <button id="minimizeBtn" onclick="toggleChat()">-</button>
-    </div>
-    <div id="chatBody">
-        <!-- Salesforce Live Chat widget will appear here -->
-    </div>
-</div>
 
 <p>Web site content will be inserted here...</p>				  
 
